@@ -14,7 +14,7 @@ export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      router.push("/login");
+      router.push("/pages/login");
     }, 2000);
     return () => clearTimeout(timer);
   }, [router]);
@@ -22,7 +22,7 @@ export default function SplashScreen() {
   if (!visible) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gray-900 text-white">
+    <div className="flex items-center justify-center min-h-screen w-full bg-black text-white">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
