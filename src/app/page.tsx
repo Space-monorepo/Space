@@ -14,7 +14,7 @@ export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      router.push("/pages/login");
+      router.push("/login");
     }, 2000);
     return () => clearTimeout(timer);
   }, [router]);
@@ -22,18 +22,19 @@ export default function SplashScreen() {
   if (!visible) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-black text-white">
+    <div className="flex items-center justify-center min-h-screen w-full bg-white text-black">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
         className="flex flex-col items-center gap-4"
       >
-        <Image src="/space.jpg" alt="Logo" width={128} height={128} className="w-32 h-32" />
+        <Image src="/intersect.svg" alt="Logo" width={128} height={128} className="w-32 h-32" />
         <div className="animate-spin mt-4">
-          <Loader className="w-6 h-6 text-white" />
+          <Loader className="w-6 h-6 text-black" />
         </div>
-        <h1 className="text-xl font-semibold">Space</h1>
+        <Image src="/space escrita.svg" alt="Logo" width={128} height={128} className="w-32 h-32" />
+        {/* <h1 className="text-xl font-semibold">Space</h1> */}
       </motion.div>
     </div>
   );
