@@ -6,7 +6,7 @@ export default function HomePage() {
       <Sidebar />
       <main className="flex-1 p-8">
         <div className="bg-white rounded-lg shadow-sm min-h-[calc(100vh-4rem)] p-6">
-          Oi
+          <h1 className="text-2xl font-bold">Dashboard</h1>
         </div>
       </main>
     </div>
