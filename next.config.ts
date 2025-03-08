@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
       source: "/signup",
         destination: "/web/pages/signup",
       },
+      {
+        source: "/settings",
+        destination: "/web/pages/settings",
+      }
     ];
   },
    devIndicators: false 

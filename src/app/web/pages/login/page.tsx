@@ -10,7 +10,7 @@ export default function LoginPage() {
    
       <div className="flex items-center justify-center w-full md:w-1/2 bg-white p-6">
         <div className="max-w-[400px] w-full">
-          <Image src="/intersect.svg" alt="Space" width={400} height={400} className="mx-auto" priority />
+          <Image src="/Planet.png" alt="Space" width={400} height={400} className="mx-auto" priority />
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
               Outlook
             </Button>
           </div>
-          <Image src="/space escrita.svg" alt="Space escrita" width={150} height={150} className="fixed bottom-8 left-8 p-4 text-sm text-gray-500" />
+          <Image src="/space-escrita.svg" alt="Space escrita" width={150} height={150} className="fixed bottom-8 left-8 p-4 text-sm text-gray-500" />
         </div>
       </div>
     </main>
