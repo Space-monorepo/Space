@@ -29,11 +29,11 @@ export default function SplashScreen() {
         transition={{ duration: 1 }}
         className="flex flex-col items-center gap-4"
       >
-        <Image src="/intersect.svg" alt="Logo" width={128} height={128} className="w-32 h-32" />
-        <div className="animate-spin mt-4">
+        <Image src="/Planet.png" alt="Logo" width={300} height={300} />
+        <div className="animate-spin mt-10">
           <Loader className="w-6 h-6 text-black" />
         </div>
-        <Image src="/space escrita.svg" alt="Logo" width={128} height={128} className="w-32 h-32" />
+        <Image src="/space-escrita.svg" alt="Logo" width={128} height={128} className="w-32 h-32" />
         {/* <h1 className="text-xl font-semibold">Space</h1> */}
       </motion.div>
     </div>
