@@ -84,7 +84,7 @@ export default function ConfiguracoesPage() {
                     <label className="text-sm font-medium">Notificações em dispositivos móveis</label>
                     <p className="text-sm text-gray-500">Ative para receber notificações no seu dispositivo móvel</p>
                   </div>
-                  <Switch className="data-[state=checked]:bg-black" />
+                  <Switch className="data-[state=checked]:bg-black"/>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ export default function ConfiguracoesPage() {
                     <label className="text-sm font-medium">Notificações por email</label>
                     <p className="text-sm text-gray-500">Ative para receber notificações por email.</p>
                   </div>
-                  <Switch defaultChecked className="data-[state=checked]:bg-black" />
+                  <Switch className="data-[state=checked]:bg-black" />
                 </div>
               </div>
             </section>
