@@ -4,8 +4,8 @@ import { NextResponse, type NextRequest } from "next/server";
 const publicRoutes = [
     { path: '/login', whenAuthenticated: '/redirect' },
     { path: '/signup', whenAuthenticated: '/redirect' },
-    { path: '/.settings', whenAuthenticated: '/next' },
-    { path: './home', whenAuthenticated: '/next' },
+    { path: '/settings', whenAuthenticated: '/next' },
+    { path: '/home', whenAuthenticated: '/next' },
 ] as const;
 
 // Rota para redirecionamento quando o usuário não está autenticado
