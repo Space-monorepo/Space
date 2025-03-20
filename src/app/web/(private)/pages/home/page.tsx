@@ -1,6 +1,12 @@
+'use client'
+
+import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import Sidebar  from "@/components/ui/sidebar";
 
 export default function HomePage() {
+
+  useCheckTokenValidity();
+
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar />
