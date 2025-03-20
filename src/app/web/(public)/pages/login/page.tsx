@@ -1,17 +1,53 @@
 'use client';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, LoginFormData } from '../../../../api/src/schemas/auth'; 
+import { loginSchema, LoginFormData } from '../../../../api/src/schemas/auth';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '../../../../api/src/auth'; 
+import { loginUser } from '../../../../api/src/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [token, setToken] = useState<string | null>(Cookies.get('token') || null);
+
+  useEffect(() => {
+    // Se o token existir, verifica sua validade
+    if (token) {
+      // Adicione uma chamada para validar o token com a API aqui
+      const checkTokenValidity = async () => {
+        try {
+          const response = await fetch('http://localhost:8000/users/me', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            // Se a resposta for negativa (token expirado), limpa o cookie e redireciona para login
+            Cookies.remove('token');
+            router.push('/login');
+          } else {
+            router.push('/home');
+          }
+        } catch (error) {
+          console.error("Erro ao validar token:", error);
+          Cookies.remove('token');
+          router.push('/login');
+        }
+      };
+
+      checkTokenValidity();
+    }
+  }, [token, router]);
+
   const {
     register,
     handleSubmit,
@@ -25,23 +61,20 @@ export default function LoginPage() {
       const formData = new FormData();
       formData.append('username', data.email);
       formData.append('password', data.password);
-  
+
       const response = await loginUser(formData);
-      console.log('Resposta do servidor:', response); 
-  
-      // Verifica se o token foi recebido
-      const token = response.token || response.data?.token || response.access_token;
-  
-      if (token) {
-        console.log('Token recebido:', token); 
-        localStorage.setItem('token', token);
-        router.push('/home'); // Redireciona para a página inicial
+
+      const newToken = response.token || response.data?.token || response.access_token;
+
+      if (newToken) {
+        Cookies.set('token', newToken, { path: '/', secure: true, sameSite: 'Lax', expires: 7 });
+        setToken(newToken); // Atualiza o estado para forçar o redirecionamento
       } else {
-        console.error('Token não encontrado na resposta do servidor'); 
+        console.error('Token não encontrado na resposta do servidor');
         alert('Token não encontrado. Por favor, tente novamente.');
       }
     } catch (error) {
-      console.error('Erro durante o login:', error); 
+      console.error('Erro durante o login:', error);
       alert(error instanceof Error ? error.message : 'Falha no login. Verifique suas credenciais.');
     }
   };

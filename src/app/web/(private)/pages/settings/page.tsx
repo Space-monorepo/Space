@@ -3,8 +3,12 @@
 import Sidebar from "@/components/ui/sidebar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken"
 
 export default function ConfiguracoesPage() {
+
+  useCheckTokenValidity();
+
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar />

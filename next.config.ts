@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/",
+        destination: "/app",
+      },
+      {
         source: "/home",
         destination: "/web/pages/home",
       },
@@ -18,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         source: "/settings",
         destination: "/web/pages/settings",
+      },
+      {
+        source: "/profile",
+        destination: "/web/pages/profile/[username]",
       }
     ];
   },

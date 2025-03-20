@@ -2,10 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Rotas públicas e seus comportamentos quando o usuário está autenticado
 const publicRoutes = [
+    { path: '/', whenAuthenticated: '/next' },
     { path: '/login', whenAuthenticated: '/redirect' },
     { path: '/signup', whenAuthenticated: '/redirect' },
     { path: '/settings', whenAuthenticated: '/next' },
     { path: '/home', whenAuthenticated: '/next' },
+    { path: '/profile', whenAuthenticated: '/next' },
 ] as const;
 
 // Rota para redirecionamento quando o usuário não está autenticado
@@ -19,7 +21,7 @@ export function middleware(request: NextRequest) {
     console.log('Token de autenticação:', authToken);
 
     // Verifica se a rota atual é pública
-    const isPublicRoute = publicRoutes.some(route => route.path === path);
+    const isPublicRoute = publicRoutes.some(route => path.startsWith(route.path));
     console.log('É uma rota pública?', isPublicRoute);
 
     // Se o usuário não estiver autenticado e a rota não for pública, redireciona para o login
@@ -32,7 +34,7 @@ export function middleware(request: NextRequest) {
 
     // Se o usuário estiver autenticado e tentar acessar uma rota pública que redireciona quando autenticado
     if (authToken && isPublicRoute) {
-        const publicRoute = publicRoutes.find(route => route.path === path);
+        const publicRoute = publicRoutes.find(route => path.startsWith(route.path));
         if (publicRoute && publicRoute.whenAuthenticated === '/redirect') {
             console.log('Usuário autenticado tentando acessar rota pública com redirecionamento. Redirecionando para home...');
             const redirectUrl = request.nextUrl.clone();
