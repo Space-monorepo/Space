@@ -13,10 +13,14 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
+  // Usando o hook que retorna usuário e loading
+  const { user, loading } = useCheckTokenValidity();
 
   const isActive = (path: string) => {
     return pathname === path;
@@ -140,8 +144,16 @@ export default function Sidebar() {
               />
             </div>
             <div className={cn("flex-col", isOpen ? "block" : "hidden")}>
-              <span className="text-sm font-medium">Joao123</span>
-              <span className="text-xs text-gray-500">@josesilva</span>
+              {loading ? (
+                <span className="text-sm font-medium">Carregando...</span>
+              ) : (
+                user && (
+                  <>
+                    <span className="text-sm font-medium">{user.name}</span>
+                    <span className="text-xs text-gray-500">@{user.username}</span>
+                  </>
+                )
+              )}
             </div>
           </Link>
         </div>
