@@ -9,16 +9,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { loadUserProfile } from "@/app/api/src/controllers/userController";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
+import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
 
-// Função para obter o token dos cookies
-const getTokenFromCookies = () => {
-  const cookie = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("token="));
-
-  if (!cookie) return null;   
-  return cookie.split("=")[1];
-};
+getTokenFromCookies();
 
 export default function ProfilePage() {
   const params = useParams();
