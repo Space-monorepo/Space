@@ -12,7 +12,7 @@ export const getUsers = async (token: string) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.detail || 'Failed to fetch user data. Please try again.'
+      (axios.isAxiosError(error) && error.response?.data?.detail) || 'Failed to fetch user data. Please try again.'
     );
   }
 };
@@ -27,7 +27,7 @@ export const getUserByEmail = async (email: string, token: string) => {
     return response.data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.detail || 'Failed to fetch user data. Please try again.'
+      (axios.isAxiosError(error) && error.response?.data?.detail) || 'Failed to fetch user data. Please try again.'
     );
   }
 };
