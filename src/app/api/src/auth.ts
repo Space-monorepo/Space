@@ -1,7 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_URL = 'http://localhost:8000';
-
 
 export const loginUser = async (formData: FormData) => {
   try {
@@ -10,15 +9,18 @@ export const loginUser = async (formData: FormData) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('Resposta completa do servidor:', response); // Debug
-    return response.data; // Certifique-se de que o token está em `response.data`
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.detail || 'Login failed. Please check your credentials.'
-    );
+    return response.data;
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      const apiMessage = err.response?.data?.detail;
+      throw new Error(apiMessage || 'Login failed. Please check your credentials.');
+    } else if (err instanceof Error) {
+      throw new Error(err.message);
+    } else {
+      throw new Error('Unknown error occurred.');
+    }
   }
 };
-
 
 export const registerUser = async (data: {
   name: string;
@@ -31,20 +33,25 @@ export const registerUser = async (data: {
       name: data.name,
       email: data.email,
       hashed_password: data.password,
-      profile_image_url: data.profile_image_url || null, 
-      reputation_level: 0, 
-      badges: [], 
-      communities: [], 
-      saved_posts: [], 
-      connections: [], 
-      is_active: true, 
-      created_at: new Date().toISOString(), 
-      updated_at: new Date().toISOString(), 
+      profile_image_url: data.profile_image_url || null,
+      reputation_level: 0,
+      badges: [],
+      communities: [],
+      saved_posts: [],
+      connections: [],
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     });
-    return response.data; 
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.detail || 'Falha no cadastro. Tente novamente.'
-    );
+    return response.data;
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      const apiMessage = err.response?.data?.detail;
+      throw new Error(apiMessage || 'Falha no cadastro. Tente novamente.');
+    } else if (err instanceof Error) {
+      throw new Error(err.message);
+    } else {
+      throw new Error('Erro desconhecido.');
+    }
   }
 };
