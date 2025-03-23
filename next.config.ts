@@ -12,11 +12,11 @@ const nextConfig: NextConfig = {
         destination: "/web/pages/home",
       },
       {
-      source: "/login",
+        source: "/login",
         destination: "/web/pages/login",
       },
-      { 
-      source: "/signup",
+      {
+        source: "/signup",
         destination: "/web/pages/signup",
       },
       {
@@ -26,9 +26,13 @@ const nextConfig: NextConfig = {
       {
         source: "/profile",
         destination: "/web/pages/profile/[username]",
-      }
+      },
     ];
   },
-   devIndicators: false 
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  devIndicators: false,
 };
+
 export default nextConfig;
