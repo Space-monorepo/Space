@@ -4,12 +4,12 @@ import Sidebar from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Mail, Users, TrendingUp, Heart, Star, Flag, Clock, BookmarkIcon, MoreHorizontal, MessageSquare } from "lucide-react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { loadUserProfile } from "@/app/api/src/controllers/userController";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
+import FilePicker from "@/components/ui/FilePicker"; 
 
 getTokenFromCookies();
 
@@ -25,32 +25,25 @@ export default function ProfilePage() {
     bio?: string;
     reputation?: string;
     popularity?: number;
+    profile_image_url?: string;
   }
 
   const [user, setUser] = useState<User | null>(null);
-  
 
-  useCheckTokenValidity(); // Chama o hook para verificar o token
+  useCheckTokenValidity(); // Verifica token
 
   useEffect(() => {
     const loadUser = async () => {
       const token = getTokenFromCookies();
-
-      console.log("Token recuperado dos cookies:", token);
-
       if (!token) {
         console.warn("Token não encontrado nos cookies.");
         return;
       }
-
       try {
         const data = await loadUserProfile(token);
-        console.log("Dados do perfil carregados:", data);
         setUser(data);
-       
       } catch (err) {
         console.error("Erro ao carregar o perfil:", err);
-        
       }
     };
 
@@ -58,6 +51,10 @@ export default function ProfilePage() {
   }, []);
 
   const isOwnProfile = user?.username === username;
+
+  const handleImageChange = (newImageUrl: string) => {
+    setUser(prev => prev ? { ...prev, profile_image_url: newImageUrl } : prev);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -68,26 +65,20 @@ export default function ProfilePage() {
           <div className="flex">
             <div className="w-80 p-4">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="w-full h-48 bg-yellow-300 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.svg?height=200&width=200"
-                    alt={user?.name || "Usuário"}
-                    width={200}
-                    height={200}
-                    className="w-full h-full object-cover"
+                <div className="relative">
+                  <FilePicker
+                    currentImageUrl={user?.profile_image_url || ''}
+                    onImageChange={handleImageChange}
+                    isOwnProfile={isOwnProfile}
                   />
                 </div>
 
                 <div className="p-4">
-                  <div>
-                    <h1 className="text-xl font-bold">{user?.name || "Carregando..."}</h1>
-                    <p className="text-gray-500 text-sm">@{user?.username || "..."}</p>
-                  </div>
-
+                  <h1 className="text-xl font-bold">{user?.name || "Carregando..."}</h1>
+                  <p className="text-gray-500 text-sm">@{user?.username || "..."}</p>
                   {!isOwnProfile && (
                     <Button className="w-full mt-3 bg-black text-white hover:bg-black/90">Conectar-se</Button>
                   )}
-
                   <div className="mt-4 space-y-2 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
@@ -152,6 +143,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* Publicações */}
             <div className="flex-1 p-4">
               <div className="space-y-4">
                 {[1, 2, 3, 4].map((post, index) => (
@@ -174,8 +166,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex-1">
                         <p className="text-sm text-gray-600">
-                          Lorem ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown
-                          printer took a galley of type and scrambled it to make a type specimen book.
+                          Lorem ipsum has been the industrys standard dummy text ever since the 1500s...
                         </p>
                       </div>
                     </div>
@@ -212,6 +203,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
+
           </div>
         </div>
       </main>
