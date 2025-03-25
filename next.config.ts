@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         source: "/profile",
         destination: "/web/pages/profile/[username]",
       },
+      {
+        source: "/messages",
+        destination: "/web/pages/messages",
+      }
     ];
   },
   eslint: {
