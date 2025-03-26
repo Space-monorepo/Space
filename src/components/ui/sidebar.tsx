@@ -9,15 +9,22 @@ import {
   Settings,
   MessageSquare,
   Trophy,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
+import { Button } from "./button";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
+  const handleLogout = () => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    window.location.href = "/login";
+  };
 
   // Usando o hook que retorna usuário e loading
   const { user, loading } = useCheckTokenValidity();
@@ -70,9 +77,9 @@ export default function Sidebar() {
               <span className={isOpen ? "block" : "hidden"}>Home</span>
             </Link>
             <Link
-              href="/pesquisar"
+              href="/search"
               className={`flex items-center space-x-3 px-3 py-2 rounded-lg ${
-                isActive("/pesquisar")
+                isActive("/search")
                   ? "bg-gray-100"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -81,9 +88,9 @@ export default function Sidebar() {
               <span className={isOpen ? "block" : "hidden"}>Pesquisar</span>
             </Link>
             <Link
-              href="/comunidades"
+              href="/communities"
               className={`flex items-center space-x-3 px-3 py-2 rounded-lg ${
-                isActive("/comunidades")
+                isActive("/communities")
                   ? "bg-gray-100"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -92,9 +99,9 @@ export default function Sidebar() {
               <span className={isOpen ? "block" : "hidden"}>Comunidades</span>
             </Link>
             <Link
-              href="/mensagens"
+              href="/messages"
               className={`flex items-center space-x-3 px-3 py-2 rounded-lg ${
-                isActive("/mensagens")
+                isActive("/messages")
                   ? "bg-gray-100"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
@@ -122,7 +129,7 @@ export default function Sidebar() {
         <Link
           href="/settings"
           className={`flex items-center space-x-3 px-3 py-2 rounded-lg ${
-            isActive("/configuracoes")
+            isActive("/settings")
               ? "bg-gray-100"
               : "text-gray-600 hover:bg-gray-100"
           }`}
@@ -132,16 +139,28 @@ export default function Sidebar() {
         </Link>
 
         {/* User Profile */}
-        <div className="flex items-center space-x-3 px-3">
+        <div className="flex items-center space-x-3 px-1">
           <Link href="/profile" className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-              <Image
-                src="/placeholder.svg"
-                alt="Profile picture"
-                width={32}
-                height={32}
-                className="w-full h-full object-cover"
-              />
+            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+              {loading ? (
+                <div className="w-8 h-8 animate-pulse bg-gray-300"></div>
+              ) : user?.profile_image_url ? (
+                <Image
+                  src={user.profile_image_url}
+                  alt="Foto de perfil"
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src="/placeholder.svg"
+                  alt="Profile picture"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
             <div className={cn("flex-col", isOpen ? "block" : "hidden")}>
               {loading ? (
@@ -150,12 +169,22 @@ export default function Sidebar() {
                 user && (
                   <>
                     <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-xs text-gray-500">@{user.username}</span>
+                    <span className="text-xs text-gray-500">
+                      @{user.username}
+                    </span>
                   </>
                 )
               )}
             </div>
           </Link>
+          
+          {/* Botão de sair */}
+          <div className={cn("flex-col px-6", isOpen ? "block" : "hidden")}>
+              <Button onClick={handleLogout}>
+                <LogOut className="flex items-center space-x-3 itens px-2 py-2 rounded-lg text-black hover:bg-gray-100 w-20 h-9"/>
+              </Button>
+          </div>
+
         </div>
       </div>
     </aside>
