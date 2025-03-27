@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,12 +34,15 @@ export default function LoginPage() {
           if (!response.ok) {
             // Se a resposta for negativa (token expirado), limpa o cookie e redireciona para login
             Cookies.remove('token');
+            toast.error('Sua sessão expirou. Por favor, faça login novamente.');
             router.push('/login');
           } else {
+            toast.success('Login realizado com sucesso.');
             router.push('/home');
           }
         } catch (error) {
-          console.error("Erro ao validar token:", error);
+          toast.error('Erro ao verificar a validade do token. Por favor, faça login novamente.');
+          console.error('Erro ao verificar a validade do token:', error);
           Cookies.remove('token');
           router.push('/login');
         }

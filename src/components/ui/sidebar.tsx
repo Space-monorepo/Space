@@ -16,14 +16,38 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import { Button } from "./button";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
   const handleLogout = () => {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    window.location.href = "/login";
+    try {
+      Cookies.remove('token', { path: '/' });
+      toast.success('Você deslogou!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 500);
+    } catch (error) {
+      toast.error('Erro ao sair. Por favor, tente novamente.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      console.error('Logout error:', error);
+    }
   };
 
   // Usando o hook que retorna usuário e loading
