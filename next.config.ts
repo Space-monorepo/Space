@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
       {
         source: "/messages",
         destination: "/web/pages/messages",
+      },
+      {
+        source: "/communities",
+        destination: "/web/pages/communities",
       }
     ];
   },
