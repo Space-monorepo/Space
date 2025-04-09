@@ -13,18 +13,19 @@ import { Separator } from '@/components/ui/separator';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Eye, EyeOff } from 'lucide-react';
+import { API_URL } from '@/config';
 
 export default function LoginPage() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(Cookies.get('token') || null);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    // Se o token existir, verifica sua validade
     if (token) {
-      // Adicione uma chamada para validar o token com a API aqui
       const checkTokenValidity = async () => {
         try {
-          const response = await fetch('http://localhost:8000/users/me', {
+          const response = await fetch(`${API_URL}/users/me`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -32,7 +33,6 @@ export default function LoginPage() {
           });
 
           if (!response.ok) {
-            // Se a resposta for negativa (token expirado), limpa o cookie e redireciona para login
             Cookies.remove('token');
             toast.error('Sua sessão expirou. Por favor, faça login novamente.');
             router.push('/login');
@@ -72,7 +72,7 @@ export default function LoginPage() {
 
       if (newToken) {
         Cookies.set('token', newToken, { path: '/', secure: true, sameSite: 'Lax', expires: 7 });
-        setToken(newToken); // Atualiza o estado para forçar o redirecionamento
+        setToken(newToken);
       } else {
         console.error('Token não encontrado na resposta do servidor');
         alert('Token não encontrado. Por favor, tente novamente.');
@@ -108,10 +108,23 @@ export default function LoginPage() {
               <Input type="email" placeholder="m.example@email.com" {...register('email')} />
               {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
             </div>
-            <div className="space-y-2">
-              <Input type="password" placeholder="Senha" {...register('password')} />
+
+            <div className="space-y-2 relative">
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Senha"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
               {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
             </div>
+
             <Button type="submit" className="w-full text-white bg-black hover:bg-black/90">
               Entrar
             </Button>
@@ -127,13 +140,10 @@ export default function LoginPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="w-full">
-              Google
-            </Button>
-            <Button variant="outline" className="w-full">
-              Outlook
-            </Button>
+            <Button variant="outline" className="w-full">Google</Button>
+            <Button variant="outline" className="w-full">Outlook</Button>
           </div>
+
           <Image src="/space-escrita.svg" alt="Space escrita" width={150} height={150} className="fixed bottom-8 left-8 p-4 text-sm text-gray-500" />
         </div>
       </div>
