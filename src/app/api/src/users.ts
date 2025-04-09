@@ -1,10 +1,9 @@
+import { API_URL } from '@/config';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/users';
 
 export const getUsers = async (token: string) => {
   try {
-    const response = await axios.get(`${API_URL}/me`, {
+    const response = await axios.get(`${API_URL}/users/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

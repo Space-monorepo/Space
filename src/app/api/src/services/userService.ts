@@ -1,6 +1,8 @@
+import { API_URL } from "@/config";
+
 // src/services/userService.ts
 export const fetchUserProfile = async (token: string) => {
-  const response = await fetch('http://localhost:8000/users/me', {
+  const response = await fetch(`${API_URL}/users/me`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,

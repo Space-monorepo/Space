@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify"; 
+import { API_URL } from "@/config";
 
 export const useCheckTokenValidity = () => {
   const [user, setUser] = useState<{ name: string; username: string; profile_image_url: string} | null>(null);
@@ -14,7 +15,7 @@ export const useCheckTokenValidity = () => {
     if (token) {
       const verifyToken = async () => {
         try {
-          const response = await fetch("http://localhost:8000/users/me", {
+          const response = await fetch(`${API_URL}/users/me`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
