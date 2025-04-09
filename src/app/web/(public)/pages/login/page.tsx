@@ -1,25 +1,21 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, LoginFormData } from '../../../../api/src/schemas/auth';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import { API_URL } from '@/config';
+import LoginForm from './components/LoginForm';
+import SocialLoginButtons from './components/SocialLoginButtons';
+import Header from './components/Header';
+import ImageSection from './components/ImageSection';
 import { loginUser } from '../../../../api/src/auth';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { Eye, EyeOff } from 'lucide-react';
-import { API_URL } from '@/config';
 
 export default function LoginPage() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(Cookies.get('token') || null);
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -52,15 +48,7 @@ export default function LoginPage() {
     }
   }, [token, router]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const onSubmit = async (data: LoginFormData) => {
+  const handleLogin = async (data: any) => {
     try {
       const formData = new FormData();
       formData.append('username', data.email);
@@ -85,50 +73,13 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col md:flex-row">
-      <div className="flex items-center justify-center w-full md:w-1/2 bg-white p-6">
-        <div className="max-w-[400px] w-full">
-          <Image src="/Planet.png" alt="Space" width={400} height={400} className="mx-auto" priority />
-        </div>
-      </div>
+      <ImageSection />
 
       <div className="flex items-center justify-center w-full md:w-1/2 bg-gray-100 p-6">
         <div className="max-w-[400px] w-full space-y-8">
-          <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-bold">Entre com sua conta</h1>
-            <p className="text-gray-500 text-sm">
-              Não tem uma conta?{' '}
-              <Link href="/signup" className="text-gray-700 hover:underline">
-                Cadastre-se
-              </Link>
-            </p>
-          </div>
+          <Header />
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Input type="email" placeholder="m.example@email.com" {...register('email')} />
-              {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
-            </div>
-
-            <div className="space-y-2 relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Senha"
-                {...register('password')}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-2.5 text-gray-500"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-              {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
-            </div>
-
-            <Button type="submit" className="w-full text-white bg-black hover:bg-black/90">
-              Entrar
-            </Button>
-          </form>
+          <LoginForm onSubmit={handleLogin} />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -139,10 +90,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="w-full">Google</Button>
-            <Button variant="outline" className="w-full">Outlook</Button>
-          </div>
+          <SocialLoginButtons />
 
           <Image src="/space-escrita.svg" alt="Space escrita" width={150} height={150} className="fixed bottom-8 left-8 p-4 text-sm text-gray-500" />
         </div>
