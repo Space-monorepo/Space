@@ -1,6 +1,6 @@
-import axios, { AxiosError } from 'axios';
+import { API_URL } from '@/config';
+import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
 
 export const loginUser = async (formData: FormData) => {
   try {
@@ -13,7 +13,7 @@ export const loginUser = async (formData: FormData) => {
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       const apiMessage = err.response?.data?.detail;
-      throw new Error(apiMessage || 'Login failed. Please check your credentials.');
+      throw new Error(apiMessage || 'Login falhou. Tente novamente.');
     } else if (err instanceof Error) {
       throw new Error(err.message);
     } else {

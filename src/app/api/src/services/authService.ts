@@ -1,6 +1,8 @@
+import { API_URL } from "@/config";
+
 // src/services/authService.ts
 export const loginUser = async (formData: FormData) => {
-    const response = await fetch("http://localhost:8000/users/login", {
+    const response = await fetch(`${API_URL}/users/login`, {
       method: "POST",
       body: formData,
     });

@@ -5,7 +5,7 @@ import { Upload, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import getTokenFromCookies from '@/app/api/src/controllers/getTokenFromCookies';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 console.log('Cloud Name:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
 console.log('Upload Preset:', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
