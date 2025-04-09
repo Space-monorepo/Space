@@ -4,6 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import axios from 'axios';
 import { API_URL } from "@/config";
+import { fetchUserProfile } from "@/app/api/src/services/userService";
+import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -20,33 +22,77 @@ interface CreatePostModalProps {
   onPollOptionChange: (index: number, value: string) => void;
 }
 
-export default function CreatePostModal({ isOpen, onClose, selectedPostType, onPostTypeSelect, postData, onInputChange, onPollOptionChange }: CreatePostModalProps) {
-  
-  const createPost = async () => {
-    try {
-      const communityId = 'your-community-id';
-      const userId = 'current-user-id';
+type PostPayload = {
+  community_id: string;
+  user_id: string;
+  type_post: string;
+  title: string;
+  content?: string;
+  image?: string;
+  poll_options?: string[];
+};
 
-      const postPayload = {
-        community_id: communityId,
-        user_id: userId,
-        type_post: "campaign",
+export default function CreatePostModal({ isOpen, onClose, selectedPostType, onPostTypeSelect, postData, onInputChange, onPollOptionChange }: CreatePostModalProps) {
+
+  const createPost = async () => {
+    let postPayload: PostPayload = {
+      community_id: "",
+      user_id: "",
+      type_post: "",
+      title: "",
+    };
+
+    try {
+      const token = getTokenFromCookies();
+      if (!token) throw new Error("Token não encontrado nos cookies");
+
+      const user = await fetchUserProfile(token);
+      console.log("Usuário carregado:", user);
+
+      if (!user._id) throw new Error("ID do usuário não encontrado.");
+      
+
+      postPayload = {
+        user_id: user._id,
+        community_id: user.communities[0]?._id || "",
+        type_post: selectedPostType!,
         title: postData.title,
-        content: postData.content,
-        image: postData.image || "",
-        poll_options: postData.poll_options.filter(option => option.trim() !== ""),
-        total_likes: 0,
-        comments: [],
-        status: "pending"
       };
 
-      const response = await axios.post(`${API_URL}/posts`, postPayload);
+      if (["campaign", "ad", "report"].includes(selectedPostType!)) {
+        postPayload.content = postData.content;
+      }
+
+      if (selectedPostType === "campaign") {
+        postPayload.image = postData.image;
+      }
+
+      if (selectedPostType === "poll") {
+        const options = postData.poll_options.filter(o => o.trim() !== "");
+        if (options.length >= 2) postPayload.poll_options = options;
+      }
+
+      console.log("Payload sendo enviado:", JSON.stringify(postPayload, null, 2));
+
+      const response = await axios.post(`${API_URL}/posts`, postPayload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       onPostTypeSelect(null);
       onClose();
-      console.log('Post criado com sucesso:', response.data);
+      console.log("Post criado com sucesso:", response.data);
     } catch (error) {
-      console.error('Erro ao criar post:', error);
+      if (axios.isAxiosError(error)) {
+        console.error("Erro ao criar post:", {
+          data: error.response?.data,
+          status: error.response?.status,
+          payload: postPayload,
+        });
+      } else {
+        console.error("Erro inesperado:", error);
+      }
     }
   };
 
