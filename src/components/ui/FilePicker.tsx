@@ -4,13 +4,8 @@ import { useRef, useState } from 'react';
 import { Upload, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import getTokenFromCookies from '@/app/api/src/controllers/getTokenFromCookies';
+import { cloudinary_link, API_URL } from '@/config';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-console.log('Cloud Name:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
-console.log('Upload Preset:', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
-
-// Função para fazer upload para o Cloudinary
 const uploadToCloudinary = async (file: File): Promise<string | null> => {
   const formData = new FormData();
   formData.append('file', file);
@@ -23,7 +18,7 @@ const uploadToCloudinary = async (file: File): Promise<string | null> => {
   }
 
   try {
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    const response = await fetch(`${cloudinary_link}`, {
       method: 'POST',
       body: formData,
     });
@@ -31,14 +26,13 @@ const uploadToCloudinary = async (file: File): Promise<string | null> => {
     if (!response.ok) throw new Error('Erro ao enviar para o Cloudinary');
 
     const data = await response.json();
-    return data.secure_url; // Retorna a URL segura da imagem
+    return data.secure_url;
   } catch (error) {
     console.error('Erro no upload para Cloudinary:', error);
     return null;
   }
 };
 
-// Interface para as props
 interface FilePickerProps {
   currentImageUrl?: string;
   onImageChange: (newImageUrl: string) => void;
@@ -49,10 +43,9 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
-  // Função para disparar o file input ao clicar na área
   const triggerFileInput = () => {
     if (isOwnProfile && fileInputRef.current && !loading) {
-      fileInputRef.current.value = ''; // Permite selecionar o mesmo arquivo novamente
+      fileInputRef.current.value = '';
       fileInputRef.current.click();
     }
   };
@@ -64,18 +57,11 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
     setLoading(true);
 
     try {
-      // Faz o upload da imagem para Cloudinary
       const imageUrl = await uploadToCloudinary(file);
       if (!imageUrl) throw new Error('Erro ao obter URL da imagem');
 
-      console.log('URL da imagem no Cloudinary:', imageUrl);
-
-      // Envia a URL da imagem para o backend
       const token = getTokenFromCookies();
       if (!token) throw new Error('Token não encontrado');
-
-      console.log('Enviando URL da imagem para o backend...');
-      console.log('Token:', token);
 
       const response = await axios.patch(
         `${API_URL}/users/me`,
@@ -89,7 +75,7 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
       );
 
       if (response.data.profile_image_url) {
-        onImageChange(response.data.profile_image_url); // Atualiza a imagem no frontend
+        onImageChange(response.data.profile_image_url);
       }
     } catch (error) {
       console.error('Erro no processo de upload:', error);
@@ -99,12 +85,12 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
   };
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <div
         onClick={triggerFileInput}
         className={`w-full h-48 bg-gray-100 rounded-lg overflow-hidden
           ${isOwnProfile ? 'cursor-pointer hover:bg-gray-200' : 'cursor-default'}
-          relative flex items-center justify-center`}
+          relative flex items-center justify-center transition`}
       >
         {currentImageUrl ? (
           <img
@@ -113,20 +99,19 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          <div className="text-gray-400">
+          <div className="text-gray-400 z-10">
             {isOwnProfile ? 'Clique para adicionar foto' : 'Sem foto'}
           </div>
         )}
 
-        {/* Overlay de upload */}
+        {/* Overlay de animação */}
         {isOwnProfile && (
           <div
-            className={`absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30
-            transition-all duration-300 flex items-center justify-center
-            ${loading ? 'bg-opacity-30' : ''}`}
+            className={`absolute inset-0 flex items-center justify-center transition-all duration-300
+              ${loading ? 'bg-black bg-opacity-40' : 'bg-black bg-opacity-0 group-hover:bg-opacity-30'}`}
           >
             {loading ? (
-              <Loader2 className="animate-spin text-white w-8 h-8" />
+              <Loader2 className="animate-spin text-white w-8 h-8 pointer-events-none" />
             ) : (
               <Upload className="text-white opacity-0 group-hover:opacity-100 w-8 h-8 transition-opacity" />
             )}
