@@ -37,7 +37,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
+      <Sidebar variant="static" />
 
       <main className="flex-1 p-4 max-w-4xl mx-auto">
         <Header activeTab={activeTab} setActiveTab={setActiveTab} openModal={() => setIsCreateModalOpen(true)} />
