@@ -1,10 +1,15 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import { Manrope } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500","600", "700", "800"],
+  variable: "--font-manrope",
+  display: "auto",
+});
 
 export const metadata: Metadata = {
   title: "Space",
@@ -17,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
+    <html lang="pt-BR" className={manrope.variable}>
+      <body className="font-manrope">
         {children}
         <ToastContainer
           position="top-right"
