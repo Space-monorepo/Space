@@ -48,16 +48,33 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
-      <main className="flex-1">
-        <div className="max-w-6xl mx-auto flex">
-          <UserProfileCard user={user} isOwnProfile={isOwnProfile} onImageChange={handleImageChange} />
-          <div className="flex-1 p-4">
-            <PostList />
+    <div className="flex bg-gray-100">
+      <div className="h-screen bg-green-300">asidebar</div>
+      <div className="flex-1 w-screen mx-24">
+        <div className="bg-white border-1 border-gray-300 border-t-0 rounded-b-xs w-auto shadow h-50 mb-5"></div>
+
+        <div className="flex justify-between">
+          <div className="flex-1 mr-5">
+            <div className="bg-white mb-5 border-1 border-gray-300 rounded shadow min-h-40">biografia</div>
+            <div className="bg-white border-1 border-gray-300 rounded shadow flex-col">
+              <div className="my-5">
+                reputação
+              </div>
+
+              <div className="my-5">
+                popularidade
+              </div>
+
+              <div className="my-5">
+                conquistas
+              </div>
+
+            </div>
           </div>
+          <div className="w-3/5 bg-white border-1 border-gray-300 rounded shadow">publicação</div>
+
         </div>
-      </main>
+      </div>
     </div>
   );
 }
