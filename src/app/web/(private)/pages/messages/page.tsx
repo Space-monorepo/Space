@@ -78,6 +78,7 @@ export default function MensagensPage() {
     return () => {
       ws.close()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleIncomingMessage = (message: Message) => {
@@ -155,7 +156,7 @@ export default function MensagensPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
+      <Sidebar variant="static"/>
 
       <div className="flex-1 flex">
         {/* Conversations List */}
