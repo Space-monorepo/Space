@@ -14,7 +14,7 @@ export default function SplashScreen() {
 
   useEffect(() => {
     if (bypass) {
-      router.push('/home');
+      router.push('/login');
       return;
     }
 
