@@ -57,7 +57,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
+      <Sidebar variant="static"/>
       <main className="flex-1">
         <div className="max-w-6xl mx-auto flex">
           <UserProfileCard 
