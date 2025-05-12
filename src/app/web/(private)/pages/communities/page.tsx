@@ -66,7 +66,7 @@ const communities = [
 export default function CommunitiesPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar />
+      <Sidebar variant="static"/>
 
       <main className="flex-1 p-4">
         <div className="max-w-5xl mx-auto">
