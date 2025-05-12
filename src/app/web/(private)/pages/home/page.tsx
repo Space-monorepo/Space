@@ -4,7 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import PostsList from "./components/postsList";
-import Header from "./components/header";
+import Header from "../../../../../components/ui/header";
 import CreatePostModal from "./components/CreatePostModal";
 import { postsData } from "./components/postsData";
 
@@ -39,9 +39,15 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar variant="static" />
 
-      <main className="flex-1 p-4 max-w-4xl mx-auto">
+      <main className="flex-1 p-4 max-w-4xl mx-80">
         <Header activeTab={activeTab} setActiveTab={setActiveTab} openModal={() => setIsCreateModalOpen(true)} />
-        <PostsList posts={postsData.map(post => ({...post, id: String(post.id)}))} />
+        <div className="overflow-y-auto no-scrollbar" style={{ maxHeight: 'calc(100vh - 150px)' }}>
+          <PostsList posts={postsData.map(post => ({
+            ...post,
+            id: String(post.id),
+            imageType: ["people", "warning", "flag", "megaphone"].includes(post.imageType) ? post.imageType as "people" | "warning" | "flag" | "megaphone" : null
+          }))} />
+        </div>
         <CreatePostModal 
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
