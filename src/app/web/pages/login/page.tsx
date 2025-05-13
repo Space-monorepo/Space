@@ -9,7 +9,7 @@ import LoginForm from './components/LoginForm';
 import SocialLoginButtons from './components/SocialLoginButtons';
 import Header from './components/Header';
 import ImageSection from './components/ImageSection';
-import { loginUser } from '../../../../api/src/auth';
+import { loginUser } from '@/app/api/src';
 import { Separator } from '@/components/ui/separator';
 import { useBypassAuth } from '@/app/api/hooks/useBypassAuth';
 
