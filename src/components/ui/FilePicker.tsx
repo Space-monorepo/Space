@@ -93,6 +93,7 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
           relative flex items-center justify-center transition`}
       >
         {currentImageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={currentImageUrl}
             alt="Foto de perfil"
