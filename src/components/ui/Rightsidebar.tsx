@@ -1,82 +1,66 @@
-import React from 'react';
-import { Campaign } from '@/app/api/src/types/posts/Campaign';
-import { Discussion } from '@/app/api/src/types/posts/Discussion';
-import { AgendaItem } from '@/app/api/src/types/posts/AgendaItem';
+import { Calendar, TrendingUp } from "lucide-react"
 
-interface RightSidebarProps {
-  campaigns: Campaign[];
-  discussions: Discussion[];
-  agendaItems: AgendaItem[];
-}
-
-export const RightSidebar: React.FC<RightSidebarProps> = ({
-  campaigns,
-  discussions,
-  agendaItems
-}) => {
+export default function RightSidebar() {
   return (
-    <aside className="flex grow gap-5 text-neutral-800 max-md:mt-10">
-      <div className="flex shrink-0 w-px bg-stone-300 h-[928px]" />
-      <div className="self-start mt-10 max-md:mt-10">
-        <section className="w-full">
-          <h2 className="gap-2 self-stretch py-3 w-full text-sm font-semibold text-neutral-800">
-            Minhas Campanhas
-          </h2>
-          <div className="w-full text-xs">
-            {campaigns.map((campaign, index) => (
-              <div key={index} className="flex gap-2 items-center py-3 pr-1.5 pl-3 w-full rounded-sm bg-neutral-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={campaign.icon}
-                  className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                  alt=""
-                />
-                <span className="self-stretch my-auto text-neutral-800 w-[139px]">
-                  {campaign.title}
-                </span>
+    <div className="w-72 border-l my-10 border-[#e0e0e0] bg-gray-100 p-4 hidden lg:block fixed right-0 top-16 bottom-0 overflow-y-auto z-[5]">
+      <div className="space-y-6">
+        {/* Minhas Campanhas */}
+        <div>
+          <h3 className="font-medium mb-3">Minhas Campanhas</h3>
+          <div className="space-y-2">
+            <div className="p-3 bg-[#E0E0E0] rounded flex items-center gap-2">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <span className="text-md">📄</span>
               </div>
-            ))}
+              <span className="text-sm">Salgado acessível</span>
+            </div>
+            <div className="p-3 bg-[#E0E0E0] rounded flex items-center gap-2">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <span className="text-md">📄</span>
+              </div>
+              <span className="text-sm">Refrigeração nas salas</span>
+            </div>
           </div>
-        </section>
+        </div>
 
-        <section className="mt-10 w-full text-xs">
-          <h2 className="gap-2 self-stretch py-3 w-full text-sm font-semibold text-neutral-800">
-            Em discussão agora
-          </h2>
-          {discussions.map((discussion, index) => (
-            <div key={index} className="flex gap-2 items-center py-2 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={discussion.icon}
-                className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                alt=""
-              />
-              <span className="self-stretch my-auto text-neutral-800">
-                {discussion.title}
-              </span>
+        {/* Em discussão agora */}
+        <div>
+          <h3 className="font-medium mb-3">Em discussão agora</h3>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <TrendingUp className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Salgado caro demais</span>
             </div>
-          ))}
-        </section>
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <TrendingUp className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Maçanetas fechado</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <TrendingUp className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Ar-condicionado</span>
+            </div>
+          </div>
+        </div>
 
-        <section className="mt-10 w-full text-xs">
-          <h2 className="gap-2 self-stretch py-3 w-full text-sm font-semibold text-neutral-800">
-            Agenda Comunitária
-          </h2>
-          {agendaItems.map((item, index) => (
-            <div key={index} className="flex gap-2 items-center py-2 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={item.icon}
-                className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                alt=""
-              />
-              <span className="self-stretch my-auto text-neutral-800 w-[139px]">
-                {item.title}
-              </span>
+        {/* Agenda Comunitária */}
+        <div>
+          <h3 className="font-medium mb-3">Agenda Comunitária</h3>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <Calendar className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Festa do 83 anos da PUC</span>
             </div>
-          ))}
-        </section>
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <Calendar className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Churrasco universitário</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 hover:bg-[#f4f4f4] rounded">
+              <Calendar className="h-4 w-4 text-[#525252]" />
+              <span className="text-sm">Ação social</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </aside>
-  );
-};
+    </div>
+  )
+}
