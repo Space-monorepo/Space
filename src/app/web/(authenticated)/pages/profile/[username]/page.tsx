@@ -9,6 +9,7 @@ import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
 import UserProfileCard from "../components/UserProfileCard";
 import PostList from "../components/PostList";
 import { useBypassAuth } from "@/app/api/hooks/useBypassAuth";
+import { Loader2 } from "lucide-react";
 
 export interface User {
   username: string;
@@ -25,7 +26,7 @@ export default function ProfilePage() {
   const params = useParams();
   const username = params.username as string;
   const bypass = useBypassAuth();
-  const { user: authUser, loading } = useCheckTokenValidity();
+  const { loading } = useCheckTokenValidity();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -52,7 +53,11 @@ export default function ProfilePage() {
   };
 
   if (loading && !bypass) {
-    return <div>Carregando...</div>;
+    return   <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
+      <Loader2 className="h-10 w-10 animate-spin text-black mb-4" />
+      <h1 className="text-xl font-semibold text-gray-800">Processando...</h1>
+      <p className="text-gray-500 mt-2">Você será redirecionado em instantes.</p>
+    </div>
   }
 
   return (
