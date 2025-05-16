@@ -34,7 +34,15 @@ const nextConfig: NextConfig = {
       {
         source: "/communities",
         destination: "/web/pages/communities",
-      }
+      },
+      {
+        source: "/administration",
+        destination: "/web/pages/administration",
+      },
+      {
+        source: "/administration/id",
+        destination: "/web/pages/administration/[id]",
+      },
     ];
   },
   images: {
