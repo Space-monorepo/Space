@@ -9,59 +9,36 @@ function isPublicRoute(pathname: string): boolean {
   return PUBLIC_ROUTES.includes(pathname);
 }
 
+// 🔓 Apenas retorna o valor da variável de ambiente
 function isBypassEnabled(): boolean {
-  const bypassAuth = process.env.BYPASS_AUTH?.toLowerCase() === 'true';
-  const isDev = process.env.NODE_ENV === 'development';
-  
-  console.log(`🛠️ Bypass conditions - BYPASS_AUTH: ${process.env.BYPASS_AUTH}, NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`🛠️ Parsed values - bypassAuth: ${bypassAuth}, isDev: ${isDev}`);
-  
-  return bypassAuth && isDev;
+  return process.env.BYPASS_AUTH === "0";
 }
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authToken = request.cookies.get("token")?.value;
 
-  console.log("\n➡️ Middleware executado");
-  console.log("📍 Rota:", pathname);
-  console.log("🔑 Token:", authToken ?? "nenhum");
-  console.log("🛠️ Variáveis de ambiente:", {
-    BYPASS_AUTH: process.env.BYPASS_AUTH,
-    NODE_ENV: process.env.NODE_ENV
-  });
-
   const bypass = isBypassEnabled();
-  console.log("🔓 Bypass ativado?", bypass);
-
-  if (bypass) {
-    console.log("🔓 Acesso concedido via bypass");
-    return NextResponse.next();
-  }
-
   const isPublic = isPublicRoute(pathname);
   const isAuthenticated = Boolean(authToken);
 
-  console.log("🔍 Status da rota:", {
-    isPublic,
-    isAuthenticated
-  });
+  if (bypass) {
+    return NextResponse.next();
+  }
 
   if (!isAuthenticated && !isPublic) {
-    console.log("🔒 Redirecionando para login (não autenticado)");
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED;
+    redirectUrl.searchParams.set("session", "expired");
     return NextResponse.redirect(redirectUrl);
   }
 
   if (isAuthenticated && isPublic) {
-    console.log("🔒 Redirecionando para dashboard (já autenticado)");
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = REDIRECT_WHEN_AUTHENTICATED;
     return NextResponse.redirect(redirectUrl);
   }
 
-  console.log("🟢 Acesso permitido");
   return NextResponse.next();
 }
 
