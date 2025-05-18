@@ -9,11 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ModalCampaign } from "../posts/ModalCampaign";
 import { ModalComplaint } from "../posts/ModalComplaint";
 import { ModalPoll } from "../posts/ModalPoll";
 import { ModalAnnouncement } from "../posts/ModalAnnouncement";
+import useCommunityActions from "@/app/api/hooks/community/useCommunityActions";
 
 interface ModalCreatePublicationProps {
   isOpen: boolean;
@@ -32,10 +33,28 @@ export function ModalCreatePublication({
   );
   const [showNextModal, setShowNextModal] = useState(false);
 
-  const communities = [
-    { value: "puc-campinas", label: "PUC-Campinas" },
-    // Adicione mais comunidades conforme necessário
-  ];
+  const {
+    communities: fetchedCommunities,
+    loading: communitiesLoading,
+    error: communitiesError,
+    fetchCommunities,
+  } = useCommunityActions();
+
+  useEffect(() => {
+    fetchCommunities();
+  }, [fetchCommunities]);
+
+  useEffect(() => {
+    // Garante que não está carregando, não houve erro, e há comunidades disponíveis
+    if (!communitiesLoading && !communitiesError && fetchedCommunities && fetchedCommunities.length > 0) {
+      const targetCommunity = fetchedCommunities.find(
+        (community) => community.name === "Puc Campinas" // Certifique-se de que este nome corresponde EXATAMENTE ao nome nos dados
+      );
+      if (targetCommunity) {
+        setSelectedCommunity(targetCommunity.id);
+      }
+    }
+  }, [communitiesLoading, communitiesError, fetchedCommunities]); // Dependências atualizadas
 
   const publicationTypes = [
     { value: "campaign", label: "Campanha" },
@@ -87,18 +106,40 @@ export function ModalCreatePublication({
               <Select
                 value={selectedCommunity}
                 onValueChange={setSelectedCommunity}
+                disabled={communitiesLoading}
               >
                 <SelectTrigger className="w-full cursor-pointer bg-neutral-200 text-neutral-500 px-4 py-2 border-none">
                   <SelectValue placeholder="Selecione uma comunidade" />
                 </SelectTrigger>
                 <SelectContent>
-                  {communities.map((community) => (
+                  {communitiesError && (
+                    <>
+                      <SelectItem value="error-loading" disabled className="text-red-500">
+                        Erro ao carregar comunidades. Tente novamente.
+                      </SelectItem>
+                      <SelectItem
+                        className="bg-white text-black hover:bg-neutral-100"
+                        key="fallback-puc-campinas"
+                        value="fallback-puc-campinas" // Valor específico para o fallback
+                      >
+                        Puc Campinas (Fallback)
+                      </SelectItem>
+                    </>
+                  )}
+                  {!communitiesLoading &&
+                    !communitiesError &&
+                    fetchedCommunities.length === 0 && (
+                      <SelectItem value="no-communities" disabled>
+                        Nenhuma comunidade encontrada.
+                      </SelectItem>
+                    )}
+                  {fetchedCommunities.map((community) => (
                     <SelectItem
                       className="bg-white text-black hover:bg-neutral-100"
-                      key={community.value}
-                      value={community.value}
+                      key={community.id}
+                      value={community.id}
                     >
-                      {community.label}
+                      {community.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
