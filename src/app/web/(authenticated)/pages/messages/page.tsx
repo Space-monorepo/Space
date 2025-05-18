@@ -1,17 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
+import { Search, Paperclip, Smile } from "lucide-react"
 import Sidebar from "@/components/ui/sidebar"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, Paperclip, MoreHorizontal } from "lucide-react"
-import Image from "next/image"
 
-// Types
 type Message = {
   id: number
-  text: string
-  sender: string
+  content: string
+  sender: "user" | "contact"
   timestamp: string
 }
 
@@ -22,280 +18,266 @@ type Conversation = {
   lastMessage: string
   time: string
   unread: number
-  messages: Message[]
+  email?: string
+  messages?: Message[]
 }
 
-
-const initialConversations: Conversation[] = [
-  {
-    id: 1,
-    name: "Nome do Usuário",
-    avatar: "/https://t.ctcdn.com.br/GR014wWXkOpIOo0kpxSfSRnk_Jk=/959x539/smart/i598772.jpeg",
-    lastMessage:
-      "Lorem ipsum has been the industry's standard dummy text ever since the 1500s.",
-    time: "11:24",
-    unread: 5,
-    messages: [],
-  },
-]
-
-const socketUrl = "ws://localhost:8000/ws/chat" //TODO: Mudar para o endereço do WebSocket que está no backend
-
 export default function MensagensPage() {
-  const [conversations, setConversations] = useState<Conversation[]>(initialConversations)
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(
-    initialConversations[0] || null
-  )
-  const [message, setMessage] = useState("")
-  const [socket, setSocket] = useState<WebSocket | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [conversations, setConversations] = useState<Conversation[]>([
+    {
+      id: 1,
+      name: "Nome do Usuário",
+      avatar: "/ProfilePic2.svg",
+      lastMessage:
+        "Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining...",
+      time: "11:24",
+      unread: 5,
+      email: "emaildousuario@gmail.com",
+      messages: [
+        {
+          id: 1,
+          content: "Olá, colega! Consegue comparecer amanhã na campanha?",
+          sender: "contact",
+          timestamp: "11:20",
+        },
+        {
+          id: 2,
+          content: "Fala companheiro, consigo sim, claro!",
+          sender: "user",
+          timestamp: "11:24",
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "Nome do Usuário",
+      avatar: "/ProfilePic3.svg",
+      lastMessage:
+        "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi...",
+      time: "11:24",
+      unread: 2,
+      email: "emaildousuario@gmail.com",
+    },
+    {
+      id: 3,
+      name: "Nome do Usuário",
+      avatar: "/ProfilePic4.svg",
+      lastMessage:
+        "It has survived not only five centuries, but also the leap into electronic typesetting, remaining...",
+      time: "11:24",
+      unread: 1,
+      email: "emaildousuario@gmail.com",
+    },
+    {
+      id: 4,
+      name: "Nome do Usuário",
+      avatar: "/ProfilePic5.svg",
+      lastMessage: "It has survived not only five centuries",
+      time: "11:24",
+      unread: 0,
+      email: "emaildousuario@gmail.com",
+    },
+    {
+      id: 5,
+      name: "Nome do Usuário",
+      avatar: "/ProfilePic6.svg",
+      lastMessage:
+        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+      time: "11:24",
+      unread: 0,
+      email: "emaildousuario@gmail.com",
+    },
+    {
+      id: 6,
+      name: "Nome do Usuário",
+      avatar: "ProfilePic1.svg",
+      lastMessage:
+        "It has survived not only five centuries, but also the leap into electronic typesetting, remaining...",
+      time: "11:24",
+      unread: 0,
+      email: "emaildousuario@gmail.com",
+    },
+  ])
 
-  const filteredConversations = conversations.filter(
-    (conv) =>
-      conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conv.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  useEffect(() => {
-    const ws = new WebSocket(socketUrl)
-
-    ws.onopen = () => {
-      console.log("Conectado ao WebSocket")
-    }
-
-    ws.onmessage = (event) => {
-      const receivedMessage = JSON.parse(event.data)
-      handleIncomingMessage(receivedMessage)
-    }
-
-    ws.onclose = () => {
-      console.log("Desconectado do WebSocket")
-    }
-
-    setSocket(ws)
-
-    return () => {
-      ws.close()
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const handleIncomingMessage = (message: Message) => {
-    if (!activeConversation) return
-
-    const updatedConversations = conversations.map((conv) => {
-      if (conv.id === activeConversation.id) {
-        return {
-          ...conv,
-          messages: [...conv.messages, message],
-          lastMessage: message.text,
-          time: "Agora",
-          unread: conv.unread + 1,
-        }
-      }
-      return conv
-    })
-    setConversations(updatedConversations)
-
-    const updatedActiveConversation = updatedConversations.find(
-      (conv) => conv.id === activeConversation.id
-    )
-    if (updatedActiveConversation) {
-      setActiveConversation(updatedActiveConversation)
-    }
-  }
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(conversations[0])
+  const [newMessage, setNewMessage] = useState("")
 
   const handleSendMessage = () => {
-    if (!message.trim() || !socket || socket.readyState !== WebSocket.OPEN || !activeConversation) return
-
-    const newMessage: Message = {
-      id: activeConversation.messages.length,
-      text: message,
-      sender: "user",
-      timestamp: new Date().toISOString(),
-    }
-
-    socket.send(JSON.stringify(newMessage))
+    if (!newMessage.trim() || !selectedConversation) return
 
     const updatedConversations = conversations.map((conv) => {
-      if (conv.id === activeConversation.id) {
+      if (conv.id === selectedConversation.id) {
+        const updatedMessages = [
+          ...(conv.messages || []),
+          {
+            id: Date.now(),
+            content: newMessage,
+            sender: "user",
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          } as const,
+        ]
+
         return {
           ...conv,
-          messages: [...conv.messages, newMessage],
-          lastMessage: message,
-          time: "Agora",
-          unread: 0,
+          messages: updatedMessages,
+          lastMessage: newMessage,
         }
       }
       return conv
     })
-    setConversations(updatedConversations)
-
-    const updatedActiveConversation = updatedConversations.find(
-      (conv) => conv.id === activeConversation.id
-    )
-    if (updatedActiveConversation) {
-      setActiveConversation(updatedActiveConversation)
-    }
-
-    setMessage("")
-  }
-
-  const handleConversationClick = (conv: Conversation) => {
-    const updatedConversations = conversations.map((c) => {
-      if (c.id === conv.id) {
-        return { ...c, unread: 0 }
-      }
-      return c
-    })
 
     setConversations(updatedConversations)
-    setActiveConversation(conv)
+    setSelectedConversation(updatedConversations.find((c) => c.id === selectedConversation.id) || null)
+    setNewMessage("")
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-[#f4f4f4] text-[#161616]">
       <Sidebar variant="static"/>
-
-      <div className="flex-1 flex">
+      <div className="ml-64 flex h-screen">
         {/* Conversations List */}
-        <div className="w-96 border-r bg-white">
-          <div className="p-4 border-b flex justify-between items-center">
+        <div className="w-[500px] border-r border-[#e0e0e0] bg-white overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b border-[#e0e0e0] flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold">Mensagens</h1>
-              <p className="text-sm text-gray-500">
-                {conversations.reduce((total, conv) => total + conv.unread, 0)} não lidas
-              </p>
+              <h1 className="text-xl font-medium">Mensagens</h1>
+              <p className="text-sm text-[#525252]">25 não lidas</p>
             </div>
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Pesquisar"
-                className="pl-9 h-9"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="w-48">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#525252] h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Pesquisar"
+                  className="w-full pl-10 pr-4 py-2 border border-[#e0e0e0] focus:outline-none focus:border-black"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="overflow-y-auto h-[calc(100vh-8rem)]">
-            {filteredConversations.map((conv) => (
+          {/* Conversations */}
+          <div className="overflow-auto flex-1">
+            {conversations.map((conversation) => (
               <div
-                key={conv.id}
-                className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
-                  activeConversation?.id === conv.id ? "bg-gray-50" : ""
+                key={conversation.id}
+                className={`p-4 border-b border-[#e0e0e0] cursor-pointer hover:bg-[#f8f8f8] flex ${
+                  selectedConversation?.id === conversation.id ? "bg-[#f4f4f4]" : ""
                 }`}
-                onClick={() => handleConversationClick(conv)}
+                onClick={() => setSelectedConversation(conversation)}
               >
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0">
-                    <Image
-                      src={conv.avatar || "/placeholder.svg"}
-                      alt={`Avatar de ${conv.name}`}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-medium truncate">{conv.name}</h3>
-                      <span className="text-xs text-gray-500 whitespace-nowrap ml-2">{conv.time}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">{conv.lastMessage}</p>
-                  </div>
-                  {conv.unread > 0 && (
-                    <div className="flex-shrink-0 self-center">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs">
-                        {conv.unread}
-                      </span>
-                    </div>
-                  )}
+                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={conversation.avatar || "/ProfilePic2.svg"}
+                    alt={conversation.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-medium truncate">{conversation.name}</h3>
+                    <span className="text-xs text-[#525252] flex-shrink-0 ml-2">{conversation.time}</span>
+                  </div>
+                  <p className="text-sm text-[#525252] truncate">{conversation.lastMessage}</p>
+                </div>
+                {conversation.unread > 0 && (
+                  <div className="ml-2 flex-shrink-0 self-center">
+                    <span className="flex items-center justify-center w-5 h-5 bg-black text-white text-xs rounded-full">
+                      {conversation.unread}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Chat Window */}
-        <div className="flex-1 flex flex-col bg-white">
-          {/* Chat Header */}
-          {activeConversation && (
-            <div className="p-4 border-b flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <Image
-                  src={activeConversation.avatar || "/placeholder.svg"}
-                  alt={`Avatar de ${activeConversation.name}`}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+        {/* Chat Area */}
+        {selectedConversation ? (
+          <div className="flex-1 flex flex-col">
+            {/* Chat Header */}
+            <div className="p-4 border-b border-[#e0e0e0] bg-white">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selectedConversation.avatar || "/ProfilePic2.svg"}
+                    alt={selectedConversation.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <div>
-                  <h2 className="font-medium">{activeConversation.name}</h2>
-                  <p className="text-xs text-gray-500">emaildousuario@gmail.com</p>
+                  <h3 className="font-medium">{selectedConversation.name}</h3>
+                  {selectedConversation.email && <p className="text-sm text-[#525252]">{selectedConversation.email}</p>}
                 </div>
               </div>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="w-5 h-5" />
-              </Button>
             </div>
-          )}
 
-          {/* Messages Area */}
-          <div className="flex-1 p-4 overflow-y-auto">
-            <div className="space-y-4">
-              {activeConversation?.messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      msg.sender === "user" ? "bg-black text-white" : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    <p>{msg.text}</p>
-                    <div className={`text-xs mt-1 ${msg.sender === "user" ? "text-gray-300" : "text-gray-500"}`}>
-                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {/* Messages */}
+            <div className="flex-1 p-4 overflow-auto bg-[#f4f4f4]">
+              {selectedConversation.messages ? (
+                <div className="space-y-4">
+                  {selectedConversation.messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[70%] p-3 ${
+                          message.sender === "user" ? "bg-black text-white" : "bg-white border-l-4 border-[#e0e0e0]"
+                        }`}
+                      >
+                        <p>{message.content}</p>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
+              ) : (
+                <div className="h-full flex items-center justify-center text-[#525252]">
+                  <p>Inicie uma conversa</p>
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* Message Input */}
-          <div className="p-4 border-t">
-            <div className="flex items-end gap-2">
-              <div className="flex-1 border rounded-lg overflow-hidden">
-                <textarea
-                  placeholder="Digite sua mensagem..."
-                  className="w-full p-3 resize-none focus:outline-none min-h-[80px]"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault()
-                      handleSendMessage()
-                    }
-                  }}
-                />
-                <div className="flex justify-between items-center p-2 bg-gray-50">
-                  <Button variant="ghost" size="icon" className="text-gray-500">
-                    <Paperclip className="w-5 h-5" />
-                  </Button>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setMessage("")}>
-                      Descartar
-                    </Button>
-                    <Button className="bg-black text-white hover:bg-black/90" onClick={handleSendMessage}>
-                      Enviar
-                    </Button>
+            {/* Message Input */}
+            <div className="p-4 border-t border-[#e0e0e0] bg-white">
+              <div className="flex items-center">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="Digite sua mensagem..."
+                    className="w-full pl-4 pr-20 py-3 border border-[#e0e0e0] focus:outline-none focus:border-black"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSendMessage()
+                      }
+                    }}
+                  />
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                    <button className="p-1 text-[#525252] hover:text-[#161616]">
+                      <Paperclip className="h-5 w-5" />
+                    </button>
+                    <button className="p-1 text-[#525252] hover:text-[#161616]">
+                      <Smile className="h-5 w-5" />
+                    </button>
                   </div>
                 </div>
+                <button
+                  className="ml-2 px-4 py-3 bg-[#161616] text-white hover:bg-[#262626] flex items-center"
+                  onClick={handleSendMessage}
+                >
+                  Enviar
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-[#f4f4f4] text-[#525252]">
+            <p>Selecione uma conversa para começar</p>
+          </div>
+        )}
       </div>
     </div>
   )
