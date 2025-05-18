@@ -14,7 +14,7 @@ export function LanguageAndTimeSection() {
             <p className="text-sm text-gray-500">Altere a linguagem utilizada na interface do usuário.</p>
           </div>
           <Select defaultValue="pt-BR">
-            <SelectTrigger className="w-[180px] bg-white border border-gray-300">
+            <SelectTrigger className="w-[180px] bg-white border border-transparent">
               <SelectValue placeholder="Selecione o idioma" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300">
@@ -31,7 +31,7 @@ export function LanguageAndTimeSection() {
             <p className="text-sm text-gray-500">Configuração atual de fuso horário.</p>
           </div>
           <Select defaultValue="SP">
-            <SelectTrigger className="w-[180px] bg-white border border-gray-300">
+            <SelectTrigger className="w-[180px] bg-white border border-transparent">
               <SelectValue placeholder="Selecione o fuso" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300">

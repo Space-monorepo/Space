@@ -5,13 +5,11 @@ import Sidebar from "@/components/ui/sidebar"
 export function SettingsWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar variant="static"/>
+      <Sidebar variant="static" />
 
-      <main className="flex-1 p-8 pl-32 transition-all duration-300 ease-in-out">
-        <div className="bg-white rounded-lg shadow-sm min-h-[calc(100vh-4rem)] p-6">
-          <div className="max-w-3xl mx-auto space-y-8">
-            {children}
-          </div>
+      <main className="flex-1 pl-64 transition-all duration-300 ease-in-out">
+        <div className="bg-white shadow-sm p-8 py-12 w-full h-full">
+          {children}
         </div>
       </main>
     </div>

@@ -12,7 +12,7 @@ export function AppearanceSection() {
           <label className="text-sm font-medium">Tema</label>
         </div>
         <Select defaultValue="light">
-          <SelectTrigger className="w-[180px] bg-white border border-gray-300">
+          <SelectTrigger className="w-[180px] bg-white border border-transparent">
             <SelectValue placeholder="Selecione o tema" />
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-300">
