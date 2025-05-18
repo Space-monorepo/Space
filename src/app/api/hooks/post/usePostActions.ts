@@ -31,22 +31,25 @@ type ComplaintData = BasePostData;
 const usePostActions = ({ onSuccess, onError }: UsePostActionsProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const getBasePostData = async () => {
-    const token = getTokenFromCookies();
-    if (!token) throw new Error("Token não encontrado nos cookies");
+const getBasePostData = async () => {
+  const token = getTokenFromCookies();
+  if (!token) throw new Error("Token não encontrado nos cookies");
 
-    const user = await fetchUserProfile(token);
-    if (!user._id) throw new Error("ID do usuário não encontrado");
+  const user = await fetchUserProfile(token);
+  if (!user.id) throw new Error("ID do usuário não encontrado");
 
-    return {
-      token,
-      user,
-      basePayload: {
-        user_id: user._id,
-        community_id: user.communities[0]?._id || "",
-      },
-    };
+  // Verifica se há comunidades vinculadas
+  const communityId = user.communities?.[0]?.id || ""; // <- valor de fallback
+
+  return {
+    token,
+    user,
+    basePayload: {
+      user_id: user.id,
+      community_id: communityId,
+    },
   };
+};
 
   const createAnnouncement = async (data: AnnouncementData) => {
     setIsLoading(true);
