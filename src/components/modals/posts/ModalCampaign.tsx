@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState, useRef } from "react";
-import usePostActions from "@/app/api/hooks/usePostActions";
+import usePostActions from "@/app/api/hooks/post/usePostActions";
 import { toast } from "react-toastify";
 
 interface StepIndicatorProps {
