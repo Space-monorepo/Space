@@ -4,6 +4,14 @@ import { useState } from "react"
 import { ArrowLeft, Filter, SortDesc, Eye } from "lucide-react"
 import Link from "next/link"
 import Sidebar from "@/components/ui/sidebar"
+import ApproveCampaignModal from "@/components/modals/community/ApproveCampaignModal"
+import RejectCampaignModal from "@/components/modals/community/RejectCampaignModal"
+
+type CommunuityProps = {
+  params: {
+    id: string
+  }
+}
 
 type Campaign = {
   id: number
@@ -18,9 +26,11 @@ type Campaign = {
   comments?: number
 }
 
-export default function CommunityAdminPage({ params }: { params: { id: string } }) {
+export default function CommunityAdminPage({ params }: CommunuityProps) {
   const [activeTab, setActiveTab] = useState("Campanhas")
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false)
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
 
   const tabs = ["Campanhas", "Denúncias", "Usuários", "Anúncios"]
 
@@ -55,6 +65,32 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
     setSelectedCampaign(campaigns[0])
   }
 
+  const handleApproveCampaign = (subject: string, message: string) => {
+    // Here you would implement the actual approval logic
+    console.log("Approving campaign with:", { subject, message })
+
+    // Update the campaign status
+    if (selectedCampaign) {
+      const updatedCampaign = { ...selectedCampaign, status: "Aprovado" as const }
+      setSelectedCampaign(updatedCampaign)
+    }
+
+    setIsApproveModalOpen(false)
+  }
+
+  const handleRejectCampaign = (subject: string, reason: string) => {
+    // Here you would implement the actual rejection logic
+    console.log("Rejecting campaign with:", { subject, reason })
+
+    // Update the campaign status
+    if (selectedCampaign) {
+      const updatedCampaign = { ...selectedCampaign, status: "Rejeitado" as const }
+      setSelectedCampaign(updatedCampaign)
+    }
+
+    setIsRejectModalOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-[#f4f4f4] text-[#161616]">
       <Sidebar variant="static"/>
@@ -63,7 +99,7 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
         <div className="w-[400px] border-r border-[#e0e0e0] bg-white min-h-screen">
           {/* Header */}
           <div className="p-4 border-b border-[#e0e0e0] flex items-center gap-3">
-            <Link href="/administration" className="p-1 hover:bg-[#e5e5e5] rounded-full">
+            <Link href="/administration" className="p-1 hover:bg-[#e5e5e5]">
               <ArrowLeft className="h-5 w-5 text-[#525252]" />
             </Link>
             <h1 className="text-xl font-medium">Título da Comunidade</h1>
@@ -88,11 +124,11 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
 
           {/* Filter and Sort */}
           <div className="p-4 flex items-center justify-between border-b border-[#e0e0e0]">
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm border border-[#e0e0e0] rounded hover:bg-[#f8f8f8]">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-sm border border-[#e0e0e0] hover:bg-[#f8f8f8]">
               <Filter className="h-4 w-4" />
               Filtrar
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm border border-[#e0e0e0] rounded hover:bg-[#f8f8f8]">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-sm border border-[#e0e0e0] hover:bg-[#f8f8f8]">
               <SortDesc className="h-4 w-4" />
               Ordenar
             </button>
@@ -121,7 +157,15 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[#525252]">{campaign.date}</span>
-                  <span className="text-xs px-2 py-0.5 bg-[#fff8e1] text-[#b28600] rounded-full">
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      campaign.status === "Em análise"
+                        ? "bg-[#fff8e1] text-[#b28600]"
+                        : campaign.status === "Aprovado"
+                          ? "bg-[#defbe6] text-[#0e6027]"
+                          : "bg-[#fff1f1] text-[#da1e28]"
+                    }`}
+                  >
                     {campaign.status}
                   </span>
                 </div>
@@ -133,13 +177,13 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
         {/* Right section - Campaign Details */}
         {selectedCampaign && (
           <div className="flex-1 p-6">
-            <div className="bg-white rounded-md border border-[#e0e0e0] p-6">
+            <div className="bg-white border border-[#e0e0e0] p-6">
               {/* Author info */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/ProfilePic3.svg"
+                    src="/ProfilePic2.svg"
                     alt="Rafael Lanza"
                     className="w-full h-full object-cover"
                   />
@@ -147,7 +191,7 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
                 <div className="flex items-center gap-2">
                   <span className="font-medium">Rafael Lanza</span>
                   <div className="w-1 h-1 rounded-full bg-[#525252]"></div>
-                  <span className="text-xs px-2 py-0.5 bg-[#393939] text-white rounded">Líder</span>
+                  <span className="text-xs px-2 py-0.5 bg-[#393939] text-white">Líder</span>
                 </div>
               </div>
 
@@ -187,23 +231,58 @@ Se você acredita na força da coletividade e no impacto de um ambiente de estud
                 </div>
                 <div>
                   <div className="text-sm text-[#525252] mb-1">Status:</div>
-                  <div className="inline-block px-2 py-0.5 bg-[#fff8e1] text-[#b28600] rounded-full text-sm">
+                  <div
+                    className={`inline-block px-2 py-0.5 rounded-full text-sm ${
+                      selectedCampaign.status === "Em análise"
+                        ? "bg-[#fff8e1] text-[#b28600]"
+                        : selectedCampaign.status === "Aprovado"
+                          ? "bg-[#defbe6] text-[#0e6027]"
+                          : "bg-[#fff1f1] text-[#da1e28]"
+                    }`}
+                  >
                     {selectedCampaign.status}
                   </div>
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex items-center gap-4">
-                <button className="px-4 py-2 border border-[#e0e0e0] rounded hover:bg-[#f8f8f8] flex-1">
-                  Rejeitar
-                </button>
-                <button className="px-4 py-2 bg-black text-white rounded hover:bg-gray-900 flex-1">Aprovar</button>
-              </div>
+              {/* Action buttons - only show if status is "Em análise" */}
+              {selectedCampaign.status === "Em análise" && (
+                <div className="flex items-center gap-4">
+                  <button
+                    className="px-4 py-2 border border-[#e0e0e0] hover:bg-[#f8f8f8] flex-1"
+                    onClick={() => setIsRejectModalOpen(true)}
+                  >
+                    Rejeitar
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-[#161616] text-white hover:bg-[#262626] flex-1"
+                    onClick={() => setIsApproveModalOpen(true)}
+                  >
+                    Aprovar
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <ApproveCampaignModal
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        onApprove={handleApproveCampaign}
+        campaignTitle={selectedCampaign?.title || ""}
+        campaignAuthor={selectedCampaign?.leader || ""}
+      />
+
+      <RejectCampaignModal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onReject={handleRejectCampaign}
+        campaignTitle={selectedCampaign?.title || ""}
+        campaignAuthor={selectedCampaign?.leader || ""}
+      />
     </div>
   )
 }
