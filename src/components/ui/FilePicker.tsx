@@ -85,10 +85,10 @@ const FilePicker = ({ currentImageUrl, onImageChange, isOwnProfile }: FilePicker
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group h-full"> {/* Ajuste na altura */}
       <div
         onClick={triggerFileInput}
-        className={`w-full h-48 bg-gray-100 rounded-lg overflow-hidden
+        className={`w-full h-full bg-gray-100 rounded-lg overflow-hidden
           ${isOwnProfile ? 'cursor-pointer hover:bg-gray-200' : 'cursor-default'}
           relative flex items-center justify-center transition`}
       >
