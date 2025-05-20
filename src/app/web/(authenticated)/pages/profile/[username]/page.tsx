@@ -1,14 +1,13 @@
 'use client'
 
-import Sidebar from "@/components/ui/sidebar";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { loadUserProfile } from "@/app/api/src/controllers/userController";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
-import UserProfileCard from "../components/UserProfileCard";
-import PostList from "../components/PostList";
 import { useBypassAuth } from "@/app/api/hooks/useBypassAuth";
+import Sidebar from "@/components/ui/sidebar";
+import Image from "next/image";
 
 export interface User {
   username: string;
@@ -34,7 +33,7 @@ export default function ProfilePage() {
     const loadUser = async () => {
       const token = getTokenFromCookies();
       if (!token) return;
-      
+
       try {
         const data = await loadUserProfile(token);
         setUser(data);
@@ -57,9 +56,14 @@ export default function ProfilePage() {
 
   return (
     <div className="flex bg-gray-100">
-      <div className="h-screen bg-green-300">asidebar</div>
-      <div className="flex-1 w-screen mx-24">
-        <div className="bg-white border-1 border-gray-300 border-t-0 rounded-b-xs w-auto shadow h-50 mb-5"></div>
+
+      <Sidebar variant="static" />
+
+      <div className="flex-1 w-screen mx-12">
+
+        <div className="bg-white border-1 border-gray-300 border-t-0 rounded-b-xs w-auto shadow h-50 mb-5 flex items-end">
+          <Image src="/profile-retangle.svg" alt="Profile" width={140} height={140} />
+        </div>
 
         <div className="flex justify-between">
           <div className="flex-1 mr-5">
