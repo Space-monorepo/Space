@@ -56,6 +56,7 @@ interface CampaignData {
   title: string;
   content: string;
   files: File[];
+  community_id: string;
 }
 
 const InputField: React.FC<{
@@ -196,15 +197,18 @@ const NavigationButtons: React.FC<{
   );
 };
 
-// Adicionar a prop onClose à interface
-export const ModalCampaign: React.FC<{ onClose?: () => void }> = ({
-  onClose,
-}) => {
+interface ModalCampaignProps {
+  onClose: () => void;
+  communityId: string;
+}
+
+export function ModalCampaign({ onClose, communityId }: ModalCampaignProps) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [campaignData, setCampaignData] = useState<CampaignData>({
     title: "",
     content: "",
     files: [],
+    community_id: communityId, // Adiciona communityId ao estado inicial
   });
   const { createCampaign } = usePostActions({
     onSuccess: () => {

@@ -19,7 +19,9 @@ interface AnnouncementData extends BasePostData {
   tags: string[];
 }
 
-type CampaignData = BasePostData;
+interface CampaignData extends BasePostData {
+  community_id: string;
+}
 
 interface PollData extends BasePostData {
   options: string[];
@@ -41,7 +43,7 @@ const getBasePostData = async () => {
   // Verifica se há comunidades vinculadas
   const community_id = user.community_id;
 
-  //TODO: pegar corretamente o community_id
+  //TODO: consertar erro de não enviar a requisição para o backend, está acusando erro de CORS
 
   return {
     token,
@@ -99,11 +101,16 @@ const getBasePostData = async () => {
 
       const formData = new FormData();
       Object.entries({
-        ...basePayload,
+        ...basePayload, // Mantém user_id, mas community_id de data será usado
         type_post: "campaign",
         title: data.title,
         content: data.content,
-      }).forEach(([key, value]) => formData.append(key, value));
+        community_id: data.community_id, // Adiciona community_id aos dados do formulário
+      }).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
 
       if (data.files) {
         data.files.forEach((file) => formData.append("files", file));

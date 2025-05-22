@@ -66,7 +66,7 @@ export function ModalCreatePublication({
   if (showNextModal) {
     switch (publicationType) {
       case "campaign":
-        return <ModalCampaign onClose={handleClose} />;
+        return <ModalCampaign onClose={handleClose} communityId={selectedCommunity} />;
       case "complaint":
         return <ModalComplaint onClose={handleClose} />;
       case "poll":
