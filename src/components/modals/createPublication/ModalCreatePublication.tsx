@@ -44,18 +44,6 @@ export function ModalCreatePublication({
     fetchCommunities();
   }, [fetchCommunities]);
 
-  useEffect(() => {
-    // Garante que não está carregando, não houve erro, e há comunidades disponíveis
-    if (!communitiesLoading && !communitiesError && fetchedCommunities && fetchedCommunities.length > 0) {
-      const targetCommunity = fetchedCommunities.find(
-        (community) => community.name === "Puc Campinas" // Certifique-se de que este nome corresponde EXATAMENTE ao nome nos dados
-      );
-      if (targetCommunity) {
-        setSelectedCommunity(targetCommunity.id);
-      }
-    }
-  }, [communitiesLoading, communitiesError, fetchedCommunities]); // Dependências atualizadas
-
   const publicationTypes = [
     { value: "campaign", label: "Campanha" },
     { value: "complaint", label: "Denúncia" },
@@ -116,13 +104,6 @@ export function ModalCreatePublication({
                     <>
                       <SelectItem value="error-loading" disabled className="text-red-500">
                         Erro ao carregar comunidades. Tente novamente.
-                      </SelectItem>
-                      <SelectItem
-                        className="bg-white text-black hover:bg-neutral-100"
-                        key="fallback-puc-campinas"
-                        value="fallback-puc-campinas" // Valor específico para o fallback
-                      >
-                        Puc Campinas (Fallback)
                       </SelectItem>
                     </>
                   )}

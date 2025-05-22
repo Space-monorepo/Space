@@ -39,14 +39,16 @@ const getBasePostData = async () => {
   if (!user.id) throw new Error("ID do usuário não encontrado");
 
   // Verifica se há comunidades vinculadas
-  const communityId = user.communities?.[0]?.id || ""; // <- valor de fallback
+  const community_id = user.community_id;
+
+  //TODO: pegar corretamente o community_id
 
   return {
     token,
     user,
     basePayload: {
       user_id: user.id,
-      community_id: communityId,
+      community_id: community_id,
     },
   };
 };

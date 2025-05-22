@@ -26,7 +26,7 @@ const useCommunityActions = (): UseCommunityActionsOutput => {
     setError(null);
     try {
       const data = await fetchAllCommunities(token);
-      setCommunities(data);
+      setCommunities(data.items);
     } catch (err) {
       setError(err as Error);
       console.error("Erro ao buscar comunidades:", err);

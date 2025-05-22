@@ -1,7 +1,7 @@
 import { API_URL } from '@/config';
-import { Community } from '@/app/api/types/community/Community';
+import { CommunityListCommunities } from '@/app/api/types/community/Community';
 
-export const fetchAllCommunities = async (token: string): Promise<Community[]> => {
+export const fetchAllCommunities = async (token: string): Promise<CommunityListCommunities> => {
   console.log("Fetching all communities with token:", token);
   const response = await fetch(`${API_URL}/communities`, {
     method: 'GET',
