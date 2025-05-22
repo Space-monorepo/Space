@@ -9,6 +9,7 @@ import { useBypassAuth } from "@/app/api/hooks/useBypassAuth";
 import Sidebar from "@/components/ui/sidebar";
 import Image from "next/image";
 import ConnectButton from "../components/ConnectButton";
+import ProgressBar from "../components/ProgressBar";
 
 export interface User {
   username: string;
@@ -60,24 +61,24 @@ export default function ProfilePage() {
 
       <Sidebar variant="static" />
 
-      <div className="flex-1 w-screen mx-12">
+      <div className="flex-1 w-screen mx-8">
 
         <div className="bg-white border-1 border-gray-300 border-t-0 rounded-b-xs w-auto shadow h-50 mb-5
         flex items-end justify-between">
           <div className="flex items-end">
-            <Image src="/profile-retangle.svg" alt="Profile" width={140} height={140} />
+            <Image src="/profile-retangle.svg" alt="Profile" width={140} height={60} />
             <div className="flex flex-col m-3">
               <div className="text-xl">Briann Gomes</div>
               <div className="text-xs text-zinc-500">@brianngomes</div>
             </div>
           </div>
-          
+
           {/* <a href="/pagina-de-destino" className="m-4 bg-black text-zinc-200 px-10 py-2 rounded-sm
           hover:bg-gray-800">
             Conectar-se
           </a> */}
 
-          <ConnectButton/>
+          <ConnectButton />
 
         </div>
 
@@ -89,17 +90,35 @@ export default function ProfilePage() {
               <div>entrou em:</div>
               <div>biografia</div>
             </div>
-            <div className="bg-white border-1 border-gray-300 rounded shadow flex-col flex">
-              <div className="">
-                reputação
+            <div className="bg-white border-1 border-gray-300 rounded shadow flex-col flex p-4">
+              <div className="mb-2">Reputação</div>
+              <ProgressBar />
+              <div className="flex justify-around text-xs text-zinc-500">
+                <div>Sob Observação</div>
+                <div>Ajudante</div>
+                <div>Colaborador</div>
+                <div>Líder</div>
               </div>
 
-              <div className="">
-                popularidade
-              </div>
+              <div className="mt-8">Popularidade</div>
 
-              <div className="">
-                conquistas
+              <div className="flex my-6 justify-center text-3xl">39.257</div>
+
+              <div className="mb-4">Conquistas</div>
+              <div className="flex justify-between text-zinc-500">
+
+                <div className="flex">
+                  <Image src="/peoples.svg" alt="teste" className="mr-1" width={20} height={20} />
+                  Líder</div>
+                <div className="flex">
+                  <Image src="/mobile.svg" alt="teste" className="mr-1" width={20} height={20} />
+                  Ativo</div>
+                <div className="flex">
+                  <Image src="/heart.svg" alt="teste" className="mr-1" width={20} height={20} />
+                  Amigável</div>
+                <div className="flex">
+                  <Image src="/star.svg" alt="teste" width={20} height={20} />
+                  Efetivo</div>
               </div>
 
             </div>

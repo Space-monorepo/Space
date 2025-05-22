@@ -4,7 +4,7 @@ import { useState } from "react"
 
 export default function ConnectButton() {
 
-    const [status, setStatus] = useState(3); // 0 = conectar-se, 1 = solicitado, 2 = conectado, 3 = editar
+    const [status, setStatus] = useState(2); // 0 = conectar-se, 1 = solicitado, 2 = conectado, 3 = editar
 
     const getLabel = () => {
         if (status === 0) return "Conectar-se";
