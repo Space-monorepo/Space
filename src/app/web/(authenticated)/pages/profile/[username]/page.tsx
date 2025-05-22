@@ -84,11 +84,24 @@ export default function ProfilePage() {
 
         <div className="flex justify-between">
           <div className="flex-1 mr-5">
-            <div className="bg-white mb-5 border-1 border-gray-300 rounded shadow min-h-40 flex flex-col
-             ">
-              <div>email</div>
-              <div>entrou em:</div>
-              <div>biografia</div>
+            <div className="bg-white mb-5 border-1 border-gray-300 rounded shadow min-h-40 flex flex-col justify-around p-4 gap-3">
+              <div className="flex gap-2">Email:
+                <div className="text-zinc-500 text-sm mt-0.5">brianngomes@gmail.com</div>
+              </div>
+
+              <div className="flex gap-2">Entrou em:
+                <div className="text-zinc-500 text-sm mt-0.5">01/01/2025</div>
+              </div>
+
+              <div className="gap-2">Biografia:
+                <div className="text-zinc-500 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  efficitur, nunc ut bibendum facilisis, nisi nunc aliquet nunc, nec
+                  tincidunt nunc nunc eget nunc. Donec efficitur, nunc ut bibendum
+                  facilisis, nisi nunc aliquet nunc, nec tincidunt nunc nunc eget nunc.
+                  
+                </div>
+              </div>
+
             </div>
             <div className="bg-white border-1 border-gray-300 rounded shadow flex-col flex p-4">
               <div className="mb-2">Reputação</div>
