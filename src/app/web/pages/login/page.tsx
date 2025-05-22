@@ -11,7 +11,7 @@ import Header from './components/Header';
 import ImageSection from './components/ImageSection';
 import { loginUser } from '@/app/api/src';
 import { Separator } from '@/components/ui/separator';
-import { useBypassAuth } from '@/app/api/hooks/useBypassAuth';
+import { useBypassAuth } from '@/app/api/src/hooks/useBypassAuth';
 
 export default function LoginPage() {
   const router = useRouter();

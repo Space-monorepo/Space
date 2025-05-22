@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { loadUserProfile } from "@/app/api/src/controllers/userController";
 import { useCheckTokenValidity } from "@/app/api/src/controllers/authCheckToken";
 import getTokenFromCookies from "@/app/api/src/controllers/getTokenFromCookies";
-import { useBypassAuth } from "@/app/api/hooks/useBypassAuth";
+import { useBypassAuth } from "@/app/api/src/hooks/useBypassAuth";
 import { 
   Loader2, 
   MessageSquare, 

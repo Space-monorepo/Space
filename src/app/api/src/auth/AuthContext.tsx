@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { API_URL } from "@/config";
-import { useBypassAuth } from "../../hooks/useBypassAuth";
+import { useBypassAuth } from "../hooks/useBypassAuth";
 import { AuthContextType, User } from "./types";
 
 const AuthContext = createContext<AuthContextType>({

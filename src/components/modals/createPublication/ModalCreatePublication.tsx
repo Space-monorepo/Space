@@ -14,7 +14,7 @@ import { ModalCampaign } from "../posts/ModalCampaign";
 import { ModalComplaint } from "../posts/ModalComplaint";
 import { ModalPoll } from "../posts/ModalPoll";
 import { ModalAnnouncement } from "../posts/ModalAnnouncement";
-import useCommunityActions from "@/app/api/hooks/community/useCommunityActions";
+import useCommunityActions from "@/app/api/src/hooks/community/useCommunityActions";
 
 interface ModalCreatePublicationProps {
   isOpen: boolean;

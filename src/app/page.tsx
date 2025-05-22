@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import Image from "next/image";
-import { useBypassAuth } from "./api/hooks/useBypassAuth";
+import { useBypassAuth } from "./api/src/hooks/useBypassAuth";
 
 export default function SplashScreen() {
   const router = useRouter();
