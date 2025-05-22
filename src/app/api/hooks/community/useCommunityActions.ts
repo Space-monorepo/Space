@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Community } from '../../types/community/Community';
+import { Community } from '../../src/types/community/Community';
 import { fetchAllCommunities } from '../../src/services/community/communityService';
 import getTokenFromCookies from '../../src/controllers/getTokenFromCookies';
 
